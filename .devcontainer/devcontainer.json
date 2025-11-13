@@ -1,0 +1,5 @@
+{
+  "image": "quay.io/jupyter/minimal-notebook:latest",
+  "waitFor": "postCreateCommand",
+  "postCreateCommand": ".devcontainer/install.sh"
+}
