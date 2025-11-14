@@ -2,7 +2,7 @@
   <span>Try JupyterLab Extensions</span>
 </h1>
 <p align="center">
-  Test JupyterLab Extensions in GitHub Codespaces • Built by <img src="https://raw.githubusercontent.com/orbrx/jupyter-marketplace/main/public/orbrx.svg" alt="Orange Bricks" height="8" valign="middle"> Orange Bricks
+  Test JupyterLab Extensions in GitHub Codespaces and Binder • Built by <img src="https://raw.githubusercontent.com/orbrx/jupyter-marketplace/main/public/orbrx.svg" alt="Orange Bricks" height="8" valign="middle"> Orange Bricks
 </p>
 
 Launch any JupyterLab extension instantly in a cloud development environment—no local installation required!
@@ -11,44 +11,91 @@ Not affiliated with Project Jupyter. Built by Orange Bricks.
 
 - **Extension catalog:** https://labextensions.dev
 - **Feedback / issues:** https://github.com/orbrx/try-labextensions/issues/new
-- **How it works:** Each branch = one extension automatically installed in Codespaces
+- **How it works:** Each branch = one extension automatically installed
 
 ## How It Works
 
-Each branch in this repository corresponds to a JupyterLab extension available on PyPI. When you create a codespace from a branch, it automatically installs that extension and launches JupyterLab.
+Each branch in this repository corresponds to a JupyterLab extension available on PyPI. When you launch from a branch, it automatically installs that extension and opens JupyterLab.
+
+Choose your platform:
+- **GitHub Codespaces**: Persistent environment, more resources, requires GitHub account
+- **Binder**: No login required, free, ephemeral (sessions timeout after inactivity)
 
 ## Quick Start
 
-1. **Browse available extensions** - Each branch name matches the PyPI package name
+### Option 1: GitHub Codespaces
 
-2. **Click a launch link** - Opens GitHub Codespaces configuration
+1. Click a Codespaces launch link
+2. Click "Create new codespace" on the configuration page
+3. Wait ~2 minutes for environment to build
+4. JupyterLab opens with the extension installed
 
-3. **Click "Create new codespace"** - Your environment builds in ~2 minutes
+**Example extensions:**
+- [jupyter-ai](https://codespaces.new/orbrx/try-labextensions/tree/jupyter-ai?quickstart=1&editor=jupyter) - AI-powered code assistance
+- [jupyterlab-git](https://codespaces.new/orbrx/try-labextensions/tree/jupyterlab-git?quickstart=1&editor=jupyter) - Git integration
+- [jupyterlab-night](https://codespaces.new/orbrx/try-labextensions/tree/jupyterlab-night?quickstart=1&editor=jupyter) - Dark theme
 
-4. **Start exploring** - JupyterLab opens with the extension installed
+**Cost:** Free tier (120 core-hours/month) or pay-as-you-go. [Pricing details](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces)
 
-## URL Pattern
+### Option 2: Binder (Quick Try)
 
-All extensions follow this pattern:
+1. Click a Binder launch badge
+2. Wait ~5-10 minutes for first build (cached builds launch in <1 minute)
+3. JupyterLab opens with the extension installed
 
+**Example extensions:**
+- [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/orbrx/try-labextensions/jupyter-ai?urlpath=lab) jupyter-ai
+- [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/orbrx/try-labextensions/jupyterlab-git?urlpath=lab) jupyterlab-git
+- [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/orbrx/try-labextensions/jupyterlab-night?urlpath=lab) jupyterlab-night
+
+**Cost:** Free (community-funded)  
+**Limits:** 10-minute idle timeout, 12-hour maximum session
+
+> 💙 **Support Binder**: mybinder.org is free thanks to community support and generous sponsors. Consider [donating to Project Jupyter](https://jupyter.org/about#donate) to help keep this valuable resource available for everyone.
+
+## URL Patterns
+
+### GitHub Codespaces
 ```
 https://codespaces.new/orbrx/try-labextensions/tree/{extension-name}?quickstart=1&editor=jupyter
+```
+
+### Binder
+```
+https://mybinder.org/v2/gh/orbrx/try-labextensions/{extension-name}?urlpath=lab
 ```
 
 Replace `{extension-name}` with any PyPI package name that provides a JupyterLab extension.
 
 ## How It Works Technically
 
-- 🌲 Each branch is identical to `main` (no code changes)
-- 🏷️ The branch name = the PyPI package name
-- ⚙️ `.devcontainer/install.sh` reads the current branch and runs `pip install {branch-name}`
-- 🚀 GitHub Codespaces builds the environment and launches JupyterLab
+### The Branch-Based Solution
 
-## Cost & Billing
+- 🌲 **All branches are identical to `main`** (no code changes between branches!)
+- 🏷️ **Branch name = PyPI package name** (e.g., branch `jupyter-ai` → `pip install jupyter-ai`)
+- 🔍 **Platform-specific detection:**
+  - **Codespaces**: `.devcontainer/install.sh` uses `git rev-parse --abbrev-ref HEAD`
+  - **Binder**: `binder/start` extracts branch from `$BINDER_REQUEST` environment variable
+- 🚀 **Automatic installation**: Extension installs when environment launches
 
-**You only pay for what you use.** Each user creates codespaces on their own GitHub account and is billed accordingly. See [GitHub Codespaces pricing](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) for details.
+### Architecture Details
 
-Free tier: 120 core-hours/month for personal accounts.
+- 🐳 **Base image**: `quay.io/jupyter/minimal-notebook:latest`
+- ⚡ **Codespaces**: Installs during `postCreateCommand` (build time)
+- ⚡ **Binder**: Installs during container startup (runtime)
+- 📦 **Compatibility**: Works with any pip-installable JupyterLab extension
+
+## Comparison: Codespaces vs Binder
+
+| Feature | GitHub Codespaces | Binder |
+|---------|------------------|--------|
+| **Login required** | Yes (GitHub) | No |
+| **Cost** | Free tier + paid | Free |
+| **Build time** | 2-3 minutes | 5-10 min (first), <1 min (cached) |
+| **Session duration** | Hours (configurable) | 10 min idle, 12 hr max |
+| **Persistence** | Files persist | Ephemeral |
+| **Resources** | 2-32 cores | ~1-2GB RAM |
+| **Best for** | Serious testing, development | Quick demos, workshops |
 
 ## Contributing
 
@@ -61,19 +108,12 @@ We welcome issues and PRs!
 
 Open an issue: https://github.com/orbrx/try-labextensions/issues/new
 
-## Architecture
-
-- 🐳 Base image: `quay.io/jupyter/minimal-notebook:latest`
-- 🔧 Dynamic installation via branch name detection
-- ⚡ Minimal configuration for fast startup
-- 📦 Works with any pip-installable JupyterLab extension
-
 ## Status
 
 Community beta. Branch list is automatically synced from JupyterLab Marketplace catalog.
 If an extension fails to install, please open an issue.
 
-## Governance & non-affiliation
+## Governance & Non-Affiliation
 
 This is a community project built by Orange Bricks. It is not an official Jupyter property.
 Trademarks and logos are the property of their respective owners.
@@ -84,8 +124,9 @@ Code in this repository is licensed under Apache-2.0.
 
 ## Acknowledgements
 
-- Thanks to the Jupyter community and maintainers of the many extensions featured here.
-- Inspired by the need to test-drive extensions before local installation.
+- Thanks to the Jupyter community and maintainers of the many extensions featured here
+- Inspired by the need to test-drive extensions before local installation
+- Built with [repo2docker](https://github.com/jupyterhub/repo2docker) (Binder) and [Dev Containers](https://containers.dev/) (Codespaces)
 
 ## Support This Project
 
