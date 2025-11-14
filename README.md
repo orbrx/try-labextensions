@@ -31,9 +31,9 @@ Choose your platform:
 4. JupyterLab opens with the extension installed
 
 **Example extensions:**
-- [jupyter-ai](https://codespaces.new/orbrx/try-labextensions/tree/jupyter-ai?quickstart=1&editor=jupyter) - AI-powered code assistance
-- [jupyterlab-git](https://codespaces.new/orbrx/try-labextensions/tree/jupyterlab-git?quickstart=1&editor=jupyter) - Git integration
-- [jupyterlab-night](https://codespaces.new/orbrx/try-labextensions/tree/jupyterlab-night?quickstart=1&editor=jupyter) - Dark theme
+- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/orbrx/try-labextensions/tree/jupyter-ai?quickstart=1&editor=jupyter) jupyter-ai - AI-powered code assistance
+- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/orbrx/try-labextensions/tree/jupyterlab-git?quickstart=1&editor=jupyter) jupyterlab-git - Git integration
+- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/orbrx/try-labextensions/tree/jupyterlab-night?quickstart=1&editor=jupyter) jupyterlab-night - Dark theme
 
 **Cost:** Free tier (120 core-hours/month) or pay-as-you-go. [Pricing details](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces)
 
