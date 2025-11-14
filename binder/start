@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+
+echo "========================================="
+echo "Start script running..."
+echo "BINDER_REQUEST=${BINDER_REQUEST}"
+echo "========================================="
+
+# Extract branch name from BINDER_REQUEST
+if [ -n "$BINDER_REQUEST" ]; then
+  BRANCH_NAME=$(echo "$BINDER_REQUEST" | awk -F'/' '{print $NF}')
+  echo "Detected branch: ${BRANCH_NAME}"
+  
+  # Install extension if not on main
+  if [ "$BRANCH_NAME" != "main" ] && [ "$BRANCH_NAME" != "master" ]; then
+    echo "Installing extension: ${BRANCH_NAME}..."
+    pip install --quiet "${BRANCH_NAME}"
+    echo "Extension ${BRANCH_NAME} installed!"
+  fi
+fi
+
+echo "Starting JupyterLab..."
+echo "========================================="
+
+# Execute whatever command was passed (starts Jupyter)
+exec "$@"
