@@ -1,25 +1,32 @@
 #!/bin/bash
 set -e
 
-# BINDER_REQUEST format: v2/gh/orbrx/try-labextensions/<extension-name>
-# Extract the branch name (last part after the final /)
+echo "========================================="
+echo "postBuild script started!"
+echo "========================================="
+echo "BINDER_REQUEST=${BINDER_REQUEST}"
+echo "All environment variables:"
+env | grep BINDER || echo "No BINDER variables found"
+echo "========================================="
+
+# Create a marker file so we can see this ran
+echo "postBuild executed at $(date)" > /tmp/postbuild-ran.txt
+
+# Extract branch name from BINDER_REQUEST
 if [ -n "$BINDER_REQUEST" ]; then
   BRANCH_NAME=$(echo "$BINDER_REQUEST" | awk -F'/' '{print $NF}')
-  echo "Extracted branch from BINDER_REQUEST: ${BRANCH_NAME}"
+  echo "Extracted branch name: ${BRANCH_NAME}"
 else
   BRANCH_NAME="main"
-  echo "No BINDER_REQUEST found, defaulting to main"
+  echo "No BINDER_REQUEST, defaulting to main"
 fi
 
-# If we're on main, skip installation
-if [ "$BRANCH_NAME" = "main" ] || [ "$BRANCH_NAME" = "master" ]; then
-  echo "On main/master branch, skipping installation"
-  exit 0
+if [ "$BRANCH_NAME" != "main" ] && [ "$BRANCH_NAME" != "master" ]; then
+  echo "Installing extension: ${BRANCH_NAME}"
+  pip install "${BRANCH_NAME}"
+  echo "Installation complete for ${BRANCH_NAME}!"
+else
+  echo "On main branch, skipping installation"
 fi
 
-# Install extension from branch name
-EXTENSION="$BRANCH_NAME"
-echo "Installing extension: ${EXTENSION}"
-
-pip install "${EXTENSION}"
-echo "Installation complete for ${EXTENSION}!"
+echo "postBuild script finished!"
