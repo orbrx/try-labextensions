@@ -1,1 +1,0 @@
-FROM quay.io/jupyter/minimal-notebook:latest
