@@ -4,29 +4,15 @@ set -e
 echo "========================================="
 echo "postBuild script started!"
 echo "========================================="
-echo "BINDER_REQUEST=${BINDER_REQUEST}"
-echo "All environment variables:"
-env | grep BINDER || echo "No BINDER variables found"
+
+pip install jupyterlab-night
+
+echo "Installation complete!"
+echo "Verifying installation..."
+pip show jupyterlab-night
+
+sleep 10
+
 echo "========================================="
-
-# Create a marker file so we can see this ran
-echo "postBuild executed at $(date)" > /tmp/postbuild-ran.txt
-
-# Extract branch name from BINDER_REQUEST
-if [ -n "$BINDER_REQUEST" ]; then
-  BRANCH_NAME=$(echo "$BINDER_REQUEST" | awk -F'/' '{print $NF}')
-  echo "Extracted branch name: ${BRANCH_NAME}"
-else
-  BRANCH_NAME="main"
-  echo "No BINDER_REQUEST, defaulting to main"
-fi
-
-if [ "$BRANCH_NAME" != "main" ] && [ "$BRANCH_NAME" != "master" ]; then
-  echo "Installing extension: ${BRANCH_NAME}"
-  pip install "${BRANCH_NAME}"
-  echo "Installation complete for ${BRANCH_NAME}!"
-else
-  echo "On main branch, skipping installation"
-fi
-
-echo "postBuild script finished!"
+echo "postBuild finished!"
+echo "========================================="
