@@ -1,18 +1,25 @@
 #!/bin/bash
 set -e
 
-# Get current branch name
-BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+# BINDER_REQUEST format: v2/gh/orbrx/try-labextensions/<extension-name>
+# Extract the branch name (last part after the final /)
+if [ -n "$BINDER_REQUEST" ]; then
+  BRANCH_NAME=$(echo "$BINDER_REQUEST" | awk -F'/' '{print $NF}')
+  echo "Extracted branch from BINDER_REQUEST: ${BRANCH_NAME}"
+else
+  BRANCH_NAME="main"
+  echo "No BINDER_REQUEST found, defaulting to main"
+fi
 
 # If we're on main, skip installation
-if [ "$BRANCH_NAME" = "main" ]; then
-  echo "On main branch, skipping installation"
+if [ "$BRANCH_NAME" = "main" ] || [ "$BRANCH_NAME" = "master" ]; then
+  echo "On main/master branch, skipping installation"
   exit 0
 fi
 
 # Install extension from branch name
 EXTENSION="$BRANCH_NAME"
-echo "Installing extension from branch name: ${EXTENSION}"
+echo "Installing extension: ${EXTENSION}"
 
 pip install "${EXTENSION}"
-echo "Installation complete!"
+echo "Installation complete for ${EXTENSION}!"
