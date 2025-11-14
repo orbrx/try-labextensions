@@ -5,13 +5,27 @@ echo "========================================="
 echo "postBuild script started!"
 echo "========================================="
 
-pip install jupyterlab-night
+# Try to get branch name from git (works during build)
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+echo "Git branch: ${BRANCH_NAME}"
+
+# Also check BINDER_REQUEST (may not be available during build)
+echo "BINDER_REQUEST: ${BINDER_REQUEST}"
+
+# If we're on main, skip installation
+if [ "$BRANCH_NAME" = "main" ] || [ "$BRANCH_NAME" = "master" ]; then
+  echo "On main/master branch, skipping installation"
+  exit 0
+fi
+
+# Install extension from branch name
+EXTENSION="$BRANCH_NAME"
+echo "Installing extension: ${EXTENSION}"
+pip install "${EXTENSION}"
 
 echo "Installation complete!"
 echo "Verifying installation..."
-pip show jupyterlab-night
-
-sleep 10
+pip show "${EXTENSION}"
 
 echo "========================================="
 echo "postBuild finished!"
